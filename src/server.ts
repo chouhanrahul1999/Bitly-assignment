@@ -1,9 +1,11 @@
 import 'dotenv/config';
 import express from "express";
+import helmet from "helmet";
 import urlRoutes from './routes/url.js';
 import mongoose from "mongoose";
 
 const app = express();
+app.use(helmet());
 app.use(express.json());
 app.use('/', urlRoutes);
 
@@ -17,6 +19,7 @@ mongoose.connect(MONGO_URI)
             console.log(`Server is running on port ${PORT}`);
         });
     })
-    .catch((err) => {
-        console.error("Failed to connect to MongoDB", err);
+    .catch((err: Error) => {
+        console.error("Failed to connect to MongoDB", err.message.replace(/[\r\n]/g, ''));
+        process.exit(1);
     });

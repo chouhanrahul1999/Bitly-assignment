@@ -2,6 +2,13 @@ import { randomBytes } from "crypto";
 import { Router, type Request, type Response } from "express";
 import Url from "../models/Url.js";
 
+const PRIVATE_IP_REGEX = /^(localhost|127\.|10\.|192\.168\.|172\.(1[6-9]|2[0-9]|3[01])\.|169\.254\.)/;
+
+const isPrivateUrl = (url: string): boolean => {
+  const { hostname } = new URL(url);
+  return PRIVATE_IP_REGEX.test(hostname);
+};
+
 const router = Router();
 
 const generateShortCode = (): string => {
@@ -21,11 +28,13 @@ router.post("/shorten", async (req, res) => {
 
     try {
         new URL(url);
-    } catch (err) {
-        return res.status(400).json({
-            error: "Invalid URL format",
-            err,
-        });
+    } catch {
+        res.status(400).json({ error: "Invalid URL format" });
+        return;
+    }
+
+    if (isPrivateUrl(url)) {
+        res.status(400).json({ error: "Private or internal URLs are not allowed" });
         return;
     }
 
@@ -43,16 +52,12 @@ router.post("/shorten", async (req, res) => {
         res.status(201).json({
             shortUrl: `${process.env.BASE_URL}/${entry.shortCode}`
         });
-    } catch (err: any) {
-        if (err.code === 11000) {
-            return res.status(409).json({
-                error: "Custom code already exists, please try another one"
-            })
+    } catch (err: unknown) {
+        if ((err as { code?: number }).code === 11000) {
+            res.status(409).json({ error: "Custom code already exists, please try another one" });
+            return;
         }
-        res.status(500).json({
-            error: "Error creating short URL",
-            err
-        })
+        res.status(500).json({ error: "Internal server error" });
     }
 });
 
