@@ -6,6 +6,7 @@ export interface IUrl extends Document {
   clicks: number;
   expiresAt: Date | null;
   createdAt: Date;
+  userId: mongoose.Types.ObjectId;
 }
 
 const UrlSchema = new Schema<IUrl>({
@@ -29,6 +30,11 @@ const UrlSchema = new Schema<IUrl>({
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   },
 });
 

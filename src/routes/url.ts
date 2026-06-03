@@ -1,6 +1,7 @@
 import { randomBytes } from "crypto";
 import { Router, type Request, type Response } from "express";
 import Url from "../models/Url.js";
+import authMiddleware from "../middleware/auth.js";
 
 const PRIVATE_IP_REGEX = /^(localhost|127\.|10\.|192\.168\.|172\.(1[6-9]|2[0-9]|3[01])\.|169\.254\.)/;
 
@@ -15,7 +16,7 @@ const generateShortCode = (): string => {
     return randomBytes(4).toString("base64url").slice(0, 6);
 };
 
-router.post("/shorten", async (req, res) => {
+router.post("/shorten", authMiddleware, async (req, res) => {
     const { url, customCode, expiresInDays } = req.body as {
         url: string;
         customCode?: string;
@@ -61,7 +62,7 @@ router.post("/shorten", async (req, res) => {
     }
 });
 
-router.get("/analytics/:code", async (req, res) => {
+router.get("/analytics/:code", authMiddleware, async (req, res) => {
     const entry = await Url.findOne({ shortCode: req.params.code as string });
 
     if (!entry) {
