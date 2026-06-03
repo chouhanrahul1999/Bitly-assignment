@@ -56,8 +56,8 @@ router.post("/shorten", async (req, res) => {
     }
 });
 
-router.get("analytics/:code", async (req, res) => {
-    const entry = await Url.findOne({ shortCode: req.params.code });
+router.get("/analytics/:code", async (req, res) => {
+    const entry = await Url.findOne({ shortCode: req.params.code as string });
 
     if (!entry) {
         res.status(404).json({ error: "Short URL not found" });
@@ -73,8 +73,8 @@ router.get("analytics/:code", async (req, res) => {
     })
 })
 
-router.get(":code", async (req, res) => {
-    const entry = await Url.findOne({ shortCode: req.params.code });
+router.get("/:code", async (req, res) => {
+    const entry = await Url.findOne({ shortCode: req.params.code as string });
 
     if (!entry) {
         res.status(404).json({ error: "Short URL not found" });
