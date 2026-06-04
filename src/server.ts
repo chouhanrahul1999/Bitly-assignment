@@ -1,12 +1,18 @@
 import 'dotenv/config';
-import express from "express";
-import helmet from "helmet";
+import express from 'express';
+import helmet from 'helmet';
+import cors from 'cors';
+import mongoose from 'mongoose';
 import urlRoutes from './routes/url.js';
 import registerRoutes from './routes/register.js';
 import loginRoutes from './routes/login.js';
-import mongoose from "mongoose";
 
 const app = express();
+
+app.use(cors({
+  origin: '*',
+  credentials: true,
+}));
 app.use(helmet());
 app.use(express.json());
 
@@ -18,13 +24,11 @@ const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI as string;
 
 mongoose.connect(MONGO_URI)
-    .then(() => {
-        console.log("Connected to MongoDB");
-        app.listen(PORT, () => {
-            console.log(`Server is running on port ${PORT}`);
-        });
-    })
-    .catch((err: Error) => {
-        console.error("Failed to connect to MongoDB", err.message.replace(/[\r\n]/g, ''));
-        process.exit(1);
-    });
+  .then(() => {
+    console.log('✅ MongoDB connected');
+    app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+  })
+  .catch((err: Error) => {
+    console.error('❌ MongoDB connection failed:', err.message.replace(/[\r\n]/g, ''));
+    process.exit(1);
+  });
