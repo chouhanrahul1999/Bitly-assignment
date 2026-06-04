@@ -10,7 +10,11 @@ import loginRoutes from './routes/login.js';
 const app = express();
 
 app.use(cors({
-  origin: '*',
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'https://url-shortener-frontend-sigma-six.vercel.app',
+  ],
   credentials: true,
 }));
 app.use(helmet());
