@@ -2,6 +2,10 @@
 
 A REST API built with Node.js, Express, TypeScript, and MongoDB that shortens long URLs — similar to Bitly.
 
+## Live Demo
+
+> Base URL: `http://3.85.14.227`
+
 ## Features
 
 - Shorten long URLs to short codes
@@ -17,10 +21,18 @@ A REST API built with Node.js, Express, TypeScript, and MongoDB that shortens lo
 - **Runtime**: Node.js
 - **Language**: TypeScript
 - **Framework**: Express.js v5
-- **Database**: MongoDB with Mongoose
+- **Database**: MongoDB Atlas
 - **Auth**: JWT + bcrypt
 - **Security**: Helmet
 - **Dev Tool**: tsx (hot reload)
+
+## DevOps
+
+- **Containerization**: Docker + docker-compose
+- **CI/CD**: GitHub Actions
+- **Cloud**: AWS EC2
+- **Reverse Proxy**: Nginx
+- **Process Manager**: PM2
 
 ## Project Structure
 
@@ -38,12 +50,42 @@ src/
 └── server.ts            # Entry point
 ```
 
+## Infrastructure
+
+```
+Internet
+    ↓
+http://3.85.14.227 (port 80)
+    ↓
+Nginx (reverse proxy)
+    ↓
+Node.js app on port 3000 (PM2)
+    ↓
+MongoDB Atlas (cloud database)
+```
+
+## CI/CD Pipeline
+
+```
+git push to main
+      ↓
+GitHub Actions triggers
+      ↓
+Job 1 — build
+  → install dependencies
+  → TypeScript type check
+  → compile to JavaScript
+      ↓
+Job 2 — docker
+  → build Docker image
+```
+
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js v18+
-- MongoDB running locally
+- MongoDB running locally or MongoDB Atlas
 
 ### Installation
 
@@ -73,6 +115,12 @@ npm run dev
 # Production
 npm run build
 npm start
+```
+
+### Run with Docker
+
+```bash
+docker compose up --build
 ```
 
 ## API Reference
@@ -145,7 +193,7 @@ Body:
 Response:
 ```json
 {
-  "shortUrl": "http://localhost:3000/google"
+  "shortUrl": "http://3.85.14.227/google"
 }
 ```
 
