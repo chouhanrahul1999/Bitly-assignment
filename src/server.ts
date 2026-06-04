@@ -14,6 +14,7 @@ app.use(cors({
     'http://localhost:3000',
     'http://localhost:3001',
     'https://url-shortener-frontend-sigma-six.vercel.app',
+    /\.vercel\.app$/,
   ],
   credentials: true,
 }));
